@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file,CMakeFiles/2d.dir/link.d CMakeFiles/2d.dir/src/Renderer/OpenGL/ShaderOpenGL.cpp.o CMakeFiles/2d.dir/src/main.cpp.o CMakeFiles/2d.dir/3rd/glad/src/glad.c.o -o 2d  3rd/glfw/src/libglfw3.a 3rd/spdlog/libspdlog.a /usr/lib/librt.a -lm -ldl
