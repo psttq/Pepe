@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 
+namespace PEPE{
 ShaderOpenGL::ShaderOpenGL(const char *vertexPath, const char *fragmentPath)
     : IShader() {
     std::string vertexCode;
@@ -96,4 +97,6 @@ void ShaderOpenGL::checkCompileErrors(unsigned int shader, std::string type) {
                 << std::endl;
         }
     }
+}
+
 }

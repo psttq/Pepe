@@ -6,26 +6,21 @@
 
 namespace PEPE {
 class VertexBufferOpenGL : public IVertexBuffer {
-    uint _count = 0;
+    uint count_ = 0;
 
   public:
     VertexBufferOpenGL(uptr<BufferLayout> layout);
     ~VertexBufferOpenGL() {
         if (id_ > 0) {
           glDeleteBuffers(1, &id_);
-          spdlog::info("Deallocated VBO. Index: {}.", id_);
         };
     }
 
-    void bind();
-    void unbind();
+    void bind() override;
+    void unbind() override;
 
-    unsigned int getIndex() const;
+    void setData(float *data, unsigned int size) override;
 
-    BufferLayout &getLayout() const;
-
-    void setData(float *data, unsigned int size);
-
-    uint count() const { return _count; }
+    uint getElementsCount() const override { return count_; }
 };
 } // namespace PEPE

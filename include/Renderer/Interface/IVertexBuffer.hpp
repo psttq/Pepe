@@ -15,6 +15,8 @@ namespace PEPE
     virtual void bind() = 0;
     virtual void unbind() = 0;
     virtual void setData(float *data, unsigned int size) = 0;
+    virtual uint getElementsCount() const  = 0;
+
 
     virtual unsigned int getIndex() const{
       return id_;

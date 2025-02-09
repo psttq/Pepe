@@ -2,6 +2,11 @@
 #include <GLFW/glfw3.h>
 
 #include <Renderer/OpenGL/ShaderOpenGL.hpp>
+#include <Renderer/OpenGL/LayoutObjectOpenGL.hpp>
+#include <Renderer/OpenGL/VertexArrayOpenGL.hpp>
+#include <Renderer/OpenGL/VertexBufferOpenGL.hpp>
+#include <Renderer/BufferLayout.hpp>
+
 
 #include <iostream>
 
@@ -45,7 +50,7 @@ int main() {
 
     // build and compile our shader program
     // ------------------------------------
-    ShaderOpenGL ourShader(
+    PEPE::ShaderOpenGL ourShader(
         "assets/shader.vs",
         "assets/shader.fs"); // you can name your shader files however you like
 
@@ -58,24 +63,41 @@ int main() {
         0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
     };
 
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s),
-    // and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
+    uptr<PEPE::BufferLayout> layout = uptr<PEPE::BufferLayout>(
+        new PEPE::BufferLayout({
+            new PEPE::LayoutObjectOpenGL{PEPE::LayoutObjectType::Float3},
+            new PEPE::LayoutObjectOpenGL{PEPE::LayoutObjectType::Float3}
+            }
+        )
+    );
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    uptr<PEPE::VertexBufferOpenGL> vertex_buffer = uptr<PEPE::VertexBufferOpenGL>(
+        new PEPE::VertexBufferOpenGL(std::move(layout))
+    );
 
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          (void *)0);
-    glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    vertex_buffer->setData(vertices, sizeof(vertices));
+
+    sptr<PEPE::VertexArrayOpenGL> vertex_array = sptr<PEPE::VertexArrayOpenGL>(new PEPE::VertexArrayOpenGL());
+    vertex_array->addVertexBuffer(std::move(vertex_buffer));
+
+    // unsigned int VBO, VAO;
+    // glGenVertexArrays(1, &VAO);
+    // glGenBuffers(1, &VBO);
+    // // bind the Vertex Array Object first, then bind and set vertex buffer(s),
+    // // and then configure vertex attributes(s).
+    // glBindVertexArray(VAO);
+
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // // position attribute
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    //                       (void *)0);
+    // glEnableVertexAttribArray(0);
+    // // color attribute
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    //                       (void *)(3 * sizeof(float)));
+    // glEnableVertexAttribArray(1);
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally
     // modify this VAO, but this rarely happens. Modifying other VAOs requires a
@@ -96,7 +118,8 @@ int main() {
 
         // render the triangle
         ourShader.use();
-        glBindVertexArray(VAO);
+        // glBindVertexArray(VAO);
+        vertex_array->bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse
@@ -108,9 +131,6 @@ int main() {
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();

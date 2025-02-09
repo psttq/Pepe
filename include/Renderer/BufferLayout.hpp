@@ -1,54 +1,36 @@
 #pragma once
 
 #include "spdlog/spdlog.h"
+#include <Renderer/Interface/ILayoutObject.hpp>
 #include <string>
 #include <vector>
 #include <glad/glad.h>
 
 namespace PEPE
 {
-
-  enum class LayoutObjectType
-  {
-    Float1,
-    Float2,
-    Float3,
-    Float4
-  };
-
-  struct LayoutObject
-  {
-    LayoutObjectType type;
-    unsigned int size = 0;
-    unsigned int stride = 0;
-    size_t offset = 0;
-
-    LayoutObject(const LayoutObjectType &obj_type) { type = obj_type; }
-  };
-
   class BufferLayout
   {
-    std::vector<LayoutObject> _layout;
+    std::vector<ILayoutObject *> _layout;
 
     void calculateLayoutProperties()
     {
       unsigned int offset = 0;
       for (auto &el : _layout)
       {
-        el.size = convertTypeToSize(el.type);
-        el.offset = offset;
+        el->size = convertTypeToSize(el->type);
+        el->offset = offset;
 
-        offset += el.size;
+        offset += el->size;
       }
 
       for (auto &el : _layout)
       {
-        el.stride = offset;
+        el->stride = offset;
       }
     }
 
   public:
-    BufferLayout(const std::initializer_list<LayoutObject> &objects)
+    BufferLayout(const std::initializer_list<ILayoutObject *> &objects)
         : _layout(objects)
     {
       calculateLayoutProperties();
@@ -60,7 +42,7 @@ namespace PEPE
       spdlog::info("Deallocated BufferLayout");
     }
 
-    void addObject(const LayoutObject &object) { _layout.push_back(object); }
+    void addObject(ILayoutObject *object) { _layout.push_back(object); }
 
     void debugPrint() const
     {
@@ -69,8 +51,8 @@ namespace PEPE
       for (auto &el : _layout)
       {
         spdlog::debug("Element {}: Type: {}, Size: {}, Stride: {}, Offset: {}", i,
-                      convertTypeToString(el.type), el.size, el.stride,
-                      el.offset);
+                      convertTypeToString(el->type), el->size, el->stride,
+                      el->offset);
       }
     }
 
@@ -150,7 +132,7 @@ namespace PEPE
       unsigned int stride = 0;
       for (const auto &el : _layout)
       {
-        stride += el.size;
+        stride += el->size;
       }
       return stride;
     }
