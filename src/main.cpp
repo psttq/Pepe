@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void framebuffer_size_callback(int width, int height);
 void processInput(GLFWwindow *window);
 
 // settings
@@ -24,9 +24,8 @@ int main() {
    
     PEPE::WindowGLFW::init("PEPE", SCR_WIDTH, SCR_HEIGHT);
 
-    glfwSetFramebufferSizeCallback(static_cast<GLFWwindow *>(PEPE::Window::get_native_window()), framebuffer_size_callback);
+    PEPE::Window::setFramebufferSizeCallback(framebuffer_size_callback);
 
-    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
@@ -63,9 +62,9 @@ int main() {
     vertex_array->addVertexBuffer(std::move(vertex_buffer));
 
 
-    while (!PEPE::Window::should_close()) {
+    while (!PEPE::Window::shouldClose()) {
    
-        processInput(static_cast<GLFWwindow *>(PEPE::Window::get_native_window()));
+        processInput(static_cast<GLFWwindow *>(PEPE::Window::getNativeWindow()));
     
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -76,7 +75,7 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         PEPE::Window::swap();
-        PEPE::Window::poll_events();
+        PEPE::Window::pollEvents();
     }
 
     return 0;
@@ -89,6 +88,6 @@ void processInput(GLFWwindow *window) {
 }
 
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void framebuffer_size_callback(int width, int height) {
     glViewport(0, 0, width, height);
 }

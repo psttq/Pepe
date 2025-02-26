@@ -8,14 +8,18 @@ namespace PEPE
 {
     class Window
     {
+        public:
+        using FramebufferSizeCallback = std::function<void(int, int)>;
+
         protected:
         static Window *window_;
 
-        virtual bool should_close_() = 0;
+        FramebufferSizeCallback framebufferSizeCallback_;
+        
+        virtual bool shouldClose_() = 0;
         virtual void swap_() = 0;
-        virtual void poll_events_() = 0;
-        virtual void *get_native_window_() = 0;
-
+        virtual void pollEvents_() = 0;
+        virtual void *getNativeWindow_() = 0;
 
         Window() = default;
         ~Window() = default;
@@ -23,31 +27,43 @@ namespace PEPE
         Window(const Window &) = delete;
         Window &operator=(const Window &) = delete;
 
-        void init_(Window *handler){
+        void init_(Window *handler)
+        {
             window_ = handler;
         }
 
-        public:
+        void framebufferSizeHandler_(int width, int height){
+            framebufferSizeCallback_(width, height);
+        }
 
-        static Window &instance(){
+    public:
+        static Window &instance()
+        {
             return *window_;
         }
 
-        static bool should_close(){
-            return window_->should_close_();
+        static bool shouldClose()
+        {
+            return window_->shouldClose_();
         }
 
-        static void swap(){
+        static void swap()
+        {
             window_->swap_();
         }
 
-        static void poll_events(){
-            window_->poll_events_();
+        static void pollEvents()
+        {
+            window_->pollEvents_();
         }
 
-        static void *get_native_window(){
-            return window_->get_native_window_();
+        static void *getNativeWindow()
+        {
+            return window_->getNativeWindow_();
         }
 
+        static void setFramebufferSizeCallback(FramebufferSizeCallback framebufferSizeCallback){
+            window_->framebufferSizeCallback_ = framebufferSizeCallback;
+        }
     };
 } // namespace PEPE

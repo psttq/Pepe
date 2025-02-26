@@ -12,13 +12,17 @@ namespace PEPE{
         WindowGLFW(const std::string &title, uint width, uint height);
         ~WindowGLFW();
 
-        bool should_close_() override;
+        bool shouldClose_() override;
         void swap_();
-        void poll_events_();
-        void *get_native_window_() override;
+        void pollEvents_();
+        void *getNativeWindow_() override;
 
+        static WindowGLFW &instance_(){
+            return *static_cast<WindowGLFW*>(&instance());
+        }
+        
+        static void framebufferSizeCallback__(GLFWwindow *window, int width, int height);
         public:
         static void init(const std::string &title, uint width, uint height);
-        
     };
 }

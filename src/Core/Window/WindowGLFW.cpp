@@ -19,13 +19,19 @@ namespace PEPE{
             throw;
         }
         glfwMakeContextCurrent(native_window_);
+
+        glfwSetFramebufferSizeCallback(native_window_, framebufferSizeCallback__);
+    }
+
+    void WindowGLFW::framebufferSizeCallback__(GLFWwindow *window, int width, int height){
+        instance_().framebufferSizeHandler_(width, height);
     }
 
     WindowGLFW::~WindowGLFW(){
         glfwTerminate();
     }
 
-    bool WindowGLFW::should_close_(){
+    bool WindowGLFW::shouldClose_(){
         return glfwWindowShouldClose(native_window_);
     }
 
@@ -37,11 +43,11 @@ namespace PEPE{
         glfwSwapBuffers(native_window_);
     }
 
-    void WindowGLFW::poll_events_(){
+    void WindowGLFW::pollEvents_(){
         glfwPollEvents();
     }
 
-    void *WindowGLFW::get_native_window_(){
+    void *WindowGLFW::getNativeWindow_(){
         return static_cast<void *>(native_window_);
     }
 }
