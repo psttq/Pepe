@@ -57,6 +57,10 @@ ShaderOpenGL::ShaderOpenGL(const char *vertexPath, const char *fragmentPath)
     glDeleteShader(fragment);
 }
 
+sptr<ShaderOpenGL> ShaderOpenGL::create(const char *vertexPath, const char *fragmentPath){
+    return sptr<ShaderOpenGL>(new ShaderOpenGL(vertexPath, fragmentPath));
+}
+
 void ShaderOpenGL::use() { glUseProgram(id_); }
 
 void ShaderOpenGL::setBool(const std::string &name, bool value) const {

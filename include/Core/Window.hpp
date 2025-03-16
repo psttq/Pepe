@@ -4,12 +4,17 @@
 
 #include <spdlog/spdlog.h>
 
+#include <Core/Window/WindowKeys.hpp>
+
 namespace PEPE
 {
     class Window
     {
         public:
         using FramebufferSizeCallback = std::function<void(int, int)>;
+        using KeyPressedCallback = std::function<void(WindowKey, int mode)>;
+
+        static WindowKeys KEYS;
 
         protected:
         static Window *window_;

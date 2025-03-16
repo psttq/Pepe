@@ -1,13 +1,16 @@
 #pragma once
 #include "Renderer/Interface/IShader.hpp"
+#include <Core/Types.hpp>
 #include <string>
 
 namespace PEPE {
 class ShaderOpenGL : public IShader {
     unsigned int id_;
 
-  public:
     ShaderOpenGL(const char *vertexPath, const char *fragmentPath);
+  public:
+  
+    static sptr<ShaderOpenGL> create(const char *vertexPath, const char *fragmentPath);
 
     void use();
 

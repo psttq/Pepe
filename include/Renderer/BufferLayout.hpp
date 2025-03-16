@@ -10,12 +10,12 @@ namespace PEPE
 {
   class BufferLayout
   {
-    std::vector<ILayoutObject *> _layout;
+    std::vector<ILayoutObject *> layout_;
 
     void calculateLayoutProperties()
     {
       unsigned int offset = 0;
-      for (auto &el : _layout)
+      for (auto &el : layout_)
       {
         el->size = convertTypeToSize(el->type);
         el->offset = offset;
@@ -23,7 +23,7 @@ namespace PEPE
         offset += el->size;
       }
 
-      for (auto &el : _layout)
+      for (auto &el : layout_)
       {
         el->stride = offset;
       }
@@ -31,7 +31,7 @@ namespace PEPE
 
   public:
     BufferLayout(const std::initializer_list<ILayoutObject *> &objects)
-        : _layout(objects)
+        : layout_(objects)
     {
       calculateLayoutProperties();
       spdlog::info("Created new buffer layout");
@@ -39,16 +39,19 @@ namespace PEPE
     }
 
     ~BufferLayout() {
+      for(auto *layoutObject : layout_){
+        delete layoutObject;
+      }
       spdlog::info("Deallocated BufferLayout");
     }
 
-    void addObject(ILayoutObject *object) { _layout.push_back(object); }
+    void addObject(ILayoutObject *object) { layout_.push_back(object); }
 
     void debugPrint() const
     {
       spdlog::debug("LayoutDebugPrint:");
       auto i = 0;
-      for (auto &el : _layout)
+      for (auto &el : layout_)
       {
         spdlog::debug("Element {}: Type: {}, Size: {}, Stride: {}, Offset: {}", i,
                       convertTypeToString(el->type), el->size, el->stride,
@@ -119,18 +122,18 @@ namespace PEPE
       }
     }
 
-    auto begin() { return _layout.begin(); }
+    auto begin() { return layout_.begin(); }
 
-    auto end() { return _layout.end(); }
+    auto end() { return layout_.end(); }
 
-    auto begin() const { return _layout.begin(); }
+    auto begin() const { return layout_.begin(); }
 
-    auto end() const { return _layout.end(); }
+    auto end() const { return layout_.end(); }
 
     unsigned int getStride()
     {
       unsigned int stride = 0;
-      for (const auto &el : _layout)
+      for (const auto &el : layout_)
       {
         stride += el->size;
       }

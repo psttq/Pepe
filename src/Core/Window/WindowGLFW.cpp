@@ -1,4 +1,5 @@
 #include <Core/Window/WindowGLFW.hpp>
+#include <Core/Window/WindowKeysGLFW.hpp>
 
 namespace PEPE{
     WindowGLFW::WindowGLFW(const std::string &title, uint width, uint height) : Window(){
@@ -21,6 +22,8 @@ namespace PEPE{
         glfwMakeContextCurrent(native_window_);
 
         glfwSetFramebufferSizeCallback(native_window_, framebufferSizeCallback__);
+
+        instance().KEYS = WindowKeysGLFW();
     }
 
     void WindowGLFW::framebufferSizeCallback__(GLFWwindow *window, int width, int height){
